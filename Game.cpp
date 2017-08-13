@@ -90,34 +90,41 @@ void Game::ComposeFrame()
 }
 void Game:: DrawBullet()
 {
-	int gunpoinx, gunpointy;
 
 	//for (auto iter : PlayerBullet)
-	for(auto iter = PlayerBullet.begin();iter!=PlayerBullet.end();++iter)
-	{ 
-		if((*iter.pointx>830||iter->pointy>530)
+	for(auto iter = PlayerBullet.begin();iter!=PlayerBullet.end();)
+	{
+		
+	 	if((*iter)->pointx >=830||(*iter)->pointy>=530||(*iter)->pointx<4||(*iter)->pointy<4)   //子弹的边界检测
 		{ 
-			iter = PlayerBullet.erase(iter);
+			delete *iter;
+			iter = PlayerBullet.erase(iter);   //把这颗子弹删除掉
 		}
 
-		else switch (iter->dec)
+		else
 		{
-		case  D3DGraphics::DOWN:
-			iter->pointy += 1;
-			break;
+			Game::gfx.PutPixel((*iter)->pointx, (*iter)->pointy, 255, 1, 255);
+			switch ((*iter)->dec)
+			{
+			case  D3DGraphics::DOWN:
+				(*iter)->pointy += 4;
+				break;
 
-		case  D3DGraphics::UP:
-			return;
-			break;
+			case  D3DGraphics::UP:
+				(*iter)->pointy -= 4;
+				break;
 
-		case  D3DGraphics::LEFT:
-			return;
-			break;
+			case  D3DGraphics::LEFT:
+				(*iter)->pointx -= 4;
+				break;
 
-		case  D3DGraphics::RIGHT:
-			return;
-			break;
+			case  D3DGraphics::RIGHT:
+				(*iter)->pointx +=4;
+				break;
 
+			}
+		
+			iter++;
 		}
 
 	}
