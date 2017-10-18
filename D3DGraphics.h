@@ -1,32 +1,31 @@
-/****************************************************************************************** 
- *	D3DGraphics.h																		  *
- *	Copyright 2015 虚幻大学 <http://www.oxox.work>								  *
- ******************************************************************************************/
+
 #pragma once
 #include <d3d9.h>
+#define BASEWIDTH 930
+#define BASEHEIGHT 530
 class D3DGraphics
 {
 private:
-	IDirect3D9*			pDirect3D;
-	IDirect3DDevice9*	pDevice;
+	IDirect3D9*			pDirect3D;     //D3D对象
+	IDirect3DDevice9*	pDevice;      //获取设备的行能，硬件设备对象  构造函数中通过version指定了其版本 
 	
 	
 public:
 	enum DirectionState
 	{
-		UP,
-		DOWN,
-		RIGHT,
-		LEFT
+		UP,             //0
+		DOWN,             //1
+		LEFT,           //2
+		RIGHT,         //3
 	};
 	D3DGraphics( HWND hWnd );
 	~D3DGraphics();
 	void PutPixel(int x, int y, int r, int g, int b);
-
-	
 	void BeginFrame();
 	void EndFrame();
-	void D3DGraphics::DrawSurface(int xoff, int yoff, int width, int height, const D3DCOLOR *xsurf, DirectionState dec);
+	void D3DGraphics::DrawSurface(int xoff, int yoff,int height	,int width ,const D3DCOLOR *xsurf, DirectionState dec);
+	void D3DGraphics::DrawTank(int xoff, int yoff, const D3DCOLOR *xsurf, DirectionState dec);
+
 	void PutPixel(int x, int y, D3DCOLOR c)    //重载PutPixel
 	{
 

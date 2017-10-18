@@ -1,6 +1,7 @@
 #pragma once
 #include<d3d9.h>
 #include<D3d9types.h>
+#include<iostream>
 struct BitmapFileHeader {         
 	unsigned int size;                       /* File size in bytes          */
 	unsigned short int reserved1, reserved2;
@@ -32,5 +33,10 @@ struct Piexl32
 	unsigned char red;
 	unsigned char alpha;
 };
+struct Piexl4
+{
+	unsigned char blue;
+};
 
-void LoadBmp(D3DCOLOR* surface);
+void LoadBmp(D3DCOLOR** surface,std::string src);
+void LoadBmp4(D3DCOLOR** surface, std::string src);

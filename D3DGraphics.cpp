@@ -1,22 +1,19 @@
-/****************************************************************************************** 
- *	D3DGraphics.cpp																		  *
-	Copyright 2015 虚幻大学 <http://www.oxox.work>
- ******************************************************************************************/
+
 #include "D3DGraphics.h"
 #include "Game.h"
 D3DGraphics::D3DGraphics( HWND hWnd )
 {
 	pDirect3D = Direct3DCreate9( D3D_SDK_VERSION );
 
-    D3DPRESENT_PARAMETERS d3dpp;
+	D3DPRESENT_PARAMETERS d3dpp;                 //用于指定即将创建IDirect3DDevice的特性
     ZeroMemory( &d3dpp,sizeof( d3dpp ) );
-    d3dpp.Windowed = TRUE;
-    d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-    d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
-	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+    d3dpp.Windowed = TRUE;                       //bool  显示模式 true代表窗口模式  false代表全屏模式
+    d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;    //交换链中的缓存的页面置换方式，其值为DDSWAPEFFECT枚举中的一个
+    d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;            //后台缓存像素格式
+	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_ONE;   //通常该值等于刷新频率
 	d3dpp.Flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
-    pDirect3D->CreateDevice( D3DADAPTER_DEFAULT,D3DDEVTYPE_HAL,hWnd,
+    pDirect3D->CreateDevice( D3DADAPTER_DEFAULT,D3DDEVTYPE_HAL,hWnd,        //通过实例化的D3DPRESENT_PARAMETERS创建 IDirectDDevice9接口对象
 		D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_PUREDEVICE,&d3dpp,&pDevice );
 }
 
@@ -60,11 +57,12 @@ void D3DGraphics::EndFrame()
 {
 	pDevice->Present( NULL,NULL,NULL,NULL );
 }
-void D3DGraphics::DrawSurface(int xoff, int yoff, int width, int height, const D3DCOLOR *xsurf, DirectionState dec)
+void D3DGraphics::DrawSurface(int xoff, int yoff, int height , int width , const D3DCOLOR *xsurf, DirectionState dec) //此函数是x y 为图像的中心 画AI
 {
-	int AllPixel = (width)*(height);
+	int AllPixel =height*width;
+	
 	if (dec == UP)
-	{
+	{  
 		for (int y = 0; y < height; y++)
 		{
 			for (int x = 0; x < width; x++)
@@ -79,7 +77,7 @@ void D3DGraphics::DrawSurface(int xoff, int yoff, int width, int height, const D
 		{
 			for (int x = width-1; x>=0; x--)
 			{
-				PutPixel(x + xoff, yoff+y, xsurf[AllPixel-y*width-x]);
+				PutPixel(x + xoff, yoff+y, xsurf[AllPixel-y*width-x-1]);
 			}
 		}
 	}
@@ -99,9 +97,33 @@ void D3DGraphics::DrawSurface(int xoff, int yoff, int width, int height, const D
 		{
 			for (int x = 0; x < width; x++)
 			{
-				PutPixel(y + xoff, yoff + x, xsurf[AllPixel - y*width - x]);
+				PutPixel(y + xoff, yoff + x, xsurf[AllPixel - y*width - x-1]);
 			}
 		}
 		
 	}
+}
+void D3DGraphics::DrawTank(int xoff, int yoff, const D3DCOLOR *xsurf, DirectionState dec)   //此函数是从又上定点画图
+{
+	int AllPixel = 4900;
+	if (dec == RIGHT)
+	{
+		for (int y = 0; y < 70; y++)
+
+			for (int x = 0; x < 70; x++)
+			{
+				PutPixel((70-x) + xoff, yoff + y, xsurf[x + y * 70]);
+			}
+
+	}
+	
+	
+	else for (int y = 0; y < 70; y++)
+	{
+		for (int x = 0; x < 70; x++)
+		{
+			PutPixel(x + xoff, yoff + y, xsurf[x + y*70]);
+		}
+	}
+
 }

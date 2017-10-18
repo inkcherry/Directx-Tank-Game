@@ -1,20 +1,23 @@
 
 #pragma once
-
+#include<windows.h>
 class KeyboardServer;
 
 class KeyboardClient
 {
 public:
-	KeyboardClient( const KeyboardServer& kServer );
+	KeyboardClient(  KeyboardServer& kServer );
 	bool UpIsPressed() const;
 	bool DownIsPressed() const;
 	bool LeftIsPressed() const;
 	bool RightIsPressed() const;
 	bool SpaceIsPressed() const;
 	bool EnterIsPressed() const;
+	bool SpaceIsRealesed() const;
+	void ResetSpaceIsReleased(); 
+	bool sapceintervallock;
 private:
-	const KeyboardServer& server;
+	KeyboardServer& server;
 };
 
 class KeyboardServer
@@ -37,10 +40,14 @@ public:
 	void OnSpaceReleased();
 	void OnEnterReleased();
 private:
+
 	bool upIsPressed;
 	bool downIsPressed;
 	bool leftIsPressed;
 	bool rightIsPressed;
 	bool spaceIsPressed;
+
+	bool spaceIsReleased;
+	
 	bool enterIsPressed;
 };

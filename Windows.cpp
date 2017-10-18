@@ -1,10 +1,8 @@
-/****************************************************************************************** 
- *	Windows.cpp																			  *
-	Copyright 2015 ��ô�ѧ <http://www.oxox.work>
- ******************************************************************************************/
+﻿
 #include <Windows.h>
 #include <wchar.h>
 #include "Game.h"
+#include "bitmap.h"
 #include "resource.h"
 
 static KeyboardServer kServ;
@@ -71,7 +69,7 @@ int WINAPI wWinMain( HINSTANCE hInst,HINSTANCE,LPWSTR,INT )
 {
 	WNDCLASSEX wc = { sizeof( WNDCLASSEX ),CS_CLASSDC,MsgProc,0,0,
                       GetModuleHandle( NULL ),NULL,NULL,NULL,NULL,
-                      L"DirectX Framework Window",NULL };
+                      "DirectX Framework Window",NULL };
     wc.hIconSm = (HICON)LoadImage( hInst,MAKEINTRESOURCE( IDI_APPICON16 ),IMAGE_ICON,16,16,0 );
 	wc.hIcon   = (HICON)LoadImage( hInst,MAKEINTRESOURCE( IDI_APPICON32 ),IMAGE_ICON,32,32,0 );
     RegisterClassEx( &wc );
@@ -82,7 +80,7 @@ int WINAPI wWinMain( HINSTANCE hInst,HINSTANCE,LPWSTR,INT )
 	wr.top = 100;
 	wr.bottom = 600 + wr.top;
 	AdjustWindowRect( &wr,WS_OVERLAPPEDWINDOW,FALSE );
-    HWND hWnd = CreateWindowW( L"DirectX Framework Window",L"��ȡbmp�ļ�",
+    HWND hWnd = CreateWindow( "DirectX Framework Window","startbmp",
                               WS_OVERLAPPEDWINDOW,wr.left,wr.top,wr.right-wr.left,wr.bottom-wr.top,
                               NULL,NULL,wc.hInstance,NULL );
 
@@ -90,9 +88,11 @@ int WINAPI wWinMain( HINSTANCE hInst,HINSTANCE,LPWSTR,INT )
     UpdateWindow( hWnd );
 
 	Game theGame( hWnd,kServ );
+
 	
     MSG msg;
     ZeroMemory( &msg,sizeof( msg ) );
+	theGame.load(theGame,hWnd);
     while( msg.message != WM_QUIT )
     {
         if( PeekMessage( &msg,NULL,0,0,PM_REMOVE ) )
@@ -102,10 +102,21 @@ int WINAPI wWinMain( HINSTANCE hInst,HINSTANCE,LPWSTR,INT )
         }
         else
 		{
-			theGame.Go();
-		}
-    }
+			const int constFps = 90;
+			float timeInOneFps = 1000.0f / constFps;    // 每秒60帧，则1帧就是约16毫秒
+			DWORD timeBegin = GetTickCount();
 
-    UnregisterClass( L"DirectX Framework Window",wc.hInstance );
+			theGame.Go();
+
+
+			DWORD timeTotal = GetTickCount() - timeBegin;
+			if (timeTotal < timeInOneFps)
+				Sleep(DWORD(timeInOneFps - timeTotal));
+
+		}
+		
+	}
+
+    UnregisterClass( "DirectX Framework Window",wc.hInstance );
     return 0;
 }
